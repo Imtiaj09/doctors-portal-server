@@ -15,15 +15,35 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vep38nb.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
 async function run() {
   try {
     const appointmentOptionCollection = client.db('doctorsPortal').collection('appointmentOptions');
+    const bookingCollection = client.db('doctorsPortal').collection('bookings')
+
 
     app.get('/appointmentOptions', async (req, res) => {
       const query = {};
       const options = await appointmentOptionCollection.find(query).toArray();
       res.send(options)
+    });
+
+    /*** 
+    * API Naming Convention
+    * app.get('/bookings')
+    * app.get('/bookings/:id')
+    * app.post('/bookings')
+    * app.patch('/bookings/:id')
+    * app.delete('/bookings/:id')
+    */
+
+    app.post('/bookings', async (req, res) => {
+      const booking = req.body;
+      console.log(booking);
+      const result = await bookingCollection.insertOne(booking);
+      res.send(result);
     })
+
   }
   finally {
 
