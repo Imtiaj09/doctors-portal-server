@@ -119,9 +119,16 @@ async function run() {
     });
 
 
-    app.get('/users', async (req, res) => {
-      const query = {};
-      const users = await usersCollection.find(query).toArray();
+    //for get all user and verify is it a admin or not
+    app.get('/users', verifyJWT, async (req, res) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail }; // only one email data
+      const queryAll = {}; // for all email data
+      const user = await usersCollection.findOne(query);
+      if (user.role !== 'admin') {
+        return res.status(403).send({ message: 'forbidden access' })
+      }
+      const users = await usersCollection.find(queryAll).toArray();
       res.send(users);
     })
 
@@ -143,7 +150,7 @@ async function run() {
 
     //Admit access and verify by JWT 
     app.put('/users/admin/:id', verifyJWT, async (req, res) => {
-      const decodedEmail = req.destroyed.email;
+      const decodedEmail = req.decodedEmail.email;
       const query = { email: decodedEmail };
       const user = await usersCollection.findOne(query);
       if (user.role !== 'admin') {
