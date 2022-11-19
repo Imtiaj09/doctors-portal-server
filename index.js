@@ -62,6 +62,14 @@ async function run() {
       res.send(options)
     });
 
+    //for selected name field in all data
+    app.get('/appointmentSpecialty', async (req, res) => {
+      const query = {};
+      const result = await appointmentOptionCollection.find(query).project({ name: 1 }).toArray();
+      res.send(result)
+
+    })
+
     /*** 
     * API Naming Convention
     * app.get('/bookings') // data get korte caile 
