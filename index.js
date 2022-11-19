@@ -167,9 +167,9 @@ async function run() {
       const query = { email };
       const user = await usersCollection.findOne(query);
       res.send({ isAdmin: user?.role === 'admin' });
-    })
+    });
 
-    //Admit access and verify by JWT 
+    //Admit access and verify by verifyJWT, verifyAdmin 
     app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) }
@@ -178,10 +178,23 @@ async function run() {
         $set: {
           role: 'admin'
         }
-      }
+      };
       const result = await usersCollection.updateOne(filter, updatedDoc, options);
       res.send(result);
     });
+
+    //temporary to update price field on appointment options}
+    // app.get('/addPrice', async (req, res) => {
+    //   const filter = {};
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: {
+    //       price: 99,
+    //     }
+    //   };
+    //   const result = await appointmentOptionCollection.updateMany(filter, updatedDoc, options);
+    //   res.send(result);
+    // });
 
     //get all the added doctors from mongodb from doctorsCollection
     app.get('/doctors', verifyJWT, verifyAdmin, async (req, res) => {
