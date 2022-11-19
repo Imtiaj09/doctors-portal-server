@@ -178,6 +178,7 @@ async function run() {
       res.send(result);
     });
 
+    //get all the added doctors from mongodb from doctorsCollection
     app.get('/doctors', async (req, res) => {
       const query = {};
       const doctors = await doctorsCollection.find(query).toArray();
