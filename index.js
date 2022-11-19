@@ -44,7 +44,7 @@ async function run() {
 
     //NOTE: Make sure you use verifyAdmin after verifyJWT
     const verifyAdmin = async (req, res, next) => {
-      console.log('inside verifyAdmin', req.decoded.email)
+      const decodedEmail = req.decoded.email;
       const query = { email: decodedEmail };
       const user = await usersCollection.findOne(query);
 
